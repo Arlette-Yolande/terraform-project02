@@ -65,6 +65,7 @@ resource "azurerm_public_ip" "pip" {
   allocation_method   = "Dynamic"
 }
 
+
 # Virtual Machinerm 
 resource "azurerm_virtual_machine" "vm" {
   count                 =   var.vm_count
