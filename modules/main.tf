@@ -14,10 +14,11 @@ resource "azurerm_virtual_network" "vnet" {
 
 # Subnet
 resource "azurerm_subnet" "subnet" {
-  name                 = var.subnet_name
+  count                = length(var.subnet_prefix)
+  name                 = "${var.subnet_name[count.index]}-sbnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = var.subnet_prefix
+  address_prefixes     = [element(var.subnet_prefix, count.index)]
 }
 
 # Network Security Group
@@ -38,17 +39,18 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 }
+# count = var.vm_count * length(var.subnet_ids) name = "${var.vm_name_prefix}-nic-${count.index + 1}"
 
 # Network Interface
 resource "azurerm_network_interface" "nic" {
-  count               = 2 
+  count               =  var.vm_count * length(var.subnet_prefix)
   name                = "${var.vm_name[count.index]}-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "myNicConfiguration"
-    subnet_id                     = azurerm_subnet.subnet.id
+    subnet_id                     = element(azurerm_subnet.subnets.*.id, count.index % length(var.subnet_prefixes))
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = count.index == 1 ? azurerm_public_ip.pip.id : null 
   }
@@ -65,11 +67,11 @@ resource "azurerm_public_ip" "pip" {
 
 # Virtual Machinerm 
 resource "azurerm_virtual_machine" "vm" {
-  count                 = 2
+  count                 =   var.vm_count
   name                  = var.vm_name[count.index]
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic[count.index].id]
+  network_interface_ids = [element(azurerm_network_interface.vm_nic.*.id, count.index)][azurerm_network_interface.nic[count.index].id]
   vm_size               = var.vm_size
 
   delete_os_disk_on_termination = true

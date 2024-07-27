@@ -1,4 +1,4 @@
-# Variables
+# Variable for prod env
 variable "prod_location" {}
 variable "prod_resource_group_name" {}
 variable "prod_vnet_name" {}
@@ -14,5 +14,18 @@ variable  "prod_computer_name" {}
 variable "prod_public_ip_name" {}
 variable "prod_allocation_method" {}
 
-
- 
+# # variable for dev env
+# variable "dev_location" {}
+# variable "dev_resource_group_name" {}
+# variable "dev_vnet_name" {}
+# variable "dev_subnet_name" {}
+# variable "dev_nsg_name" {}
+# variable "dev_vm_name" {}
+# variable  "dev_admin_username" {}
+# variable  "dev_admin_password" {}
+# variable  "dev_address_space" {}
+# variable  "dev_subnet_prefix" {}
+# variable  "dev_vm_size" {}
+# variable  "dev_computer_name" {}
+# variable "dev_public_ip_name" {}
+# variable "dev_allocation_method" {}

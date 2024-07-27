@@ -39,6 +39,12 @@ variable "admin_password" {
   
 }
 
+variable  "vm_count" {
+   description = "The number of virtual machine to be created"
+   type  = number
+}
+
+
 variable "address_space" {
   description = "The address space of the virtual network."
   
